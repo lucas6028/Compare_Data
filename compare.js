@@ -3,12 +3,12 @@ const Excel = require("exceljs");
 
 // Define the directory path and Excel file name
 const directoryPath = "C:/Users/Hao/OneDrive/Documents/data/";
-const fullPath = "C:/Users/Hao/OneDrive/Documents/data/guid.xlsx";
+const excelPath = "C:/Users/Hao/OneDrive/Documents/data/guid.xlsx";
 
 // Read Excel Data
 const workbook = new Excel.Workbook();
 workbook.xlsx
-  .readFile(fullPath)
+  .readFile(excelPath)
   .then(() => {
     const worksheet = workbook.getWorksheet(1);
     const excelData = [];
