@@ -13,7 +13,7 @@ workbook.xlsx.readFile(excelFileName)
     const excelData = [];
 
     worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-      excelData.push(row.values);
+      excelData.push(row.getCell(1).value); // Assuming excel data is in column A
     });
 
     // Read the directory contents
@@ -39,47 +39,36 @@ workbook.xlsx.readFile(excelFileName)
           // Process JSON data
           const parsedJsonData = JSON.parse(jsonData);
 
-          // Search for String in JSON Data
-          const searchString = 'specificString';
-          const offset = 3; // Number of characters after the string
-          const length = 36; // Length of the data to extract
+          // Extract the value associated with the key "GUID"
+          const jsonGUID = parsedJsonData.GUID;
 
-          const foundIndex = parsedJsonData.indexOf(searchString);
+          // Initialize flag for match found
+          let matchFound = false;
 
-          if (foundIndex !== -1 && foundIndex + offset + length <= parsedJsonData.length) {
-            // Extract Data for Comparison
-            const extractedData = parsedJsonData.substring(foundIndex + offset, foundIndex + offset + length);
-
-            // Initialize flag for match found
-            let matchFound = false;
-
-            for (let i = 0; i < excelData.length; i++) {
-              const excelA = excelData[i][1]; // Assuming excel data is in column A
-              if (extractedData.includes(excelA)) {
-                // Write JSON file name to Excel B
-                worksheet.getCell(`B${i + 1}`).value = jsonFile;
-                matchFound = true;
-                break; // Match found, no need to continue checking
-              }
+          for (let i = 0; i < excelData.length; i++) {
+            const excelA = excelData[i];
+            if (excelA === jsonGUID) {
+              // Write JSON file name to Excel B
+              worksheet.getCell(`B${i + 1}`).value = jsonFile;
+              matchFound = true;
+              break; // Match found, no need to continue checking
             }
-
-            // If no match found, consider other comparison logic here
-            if (!matchFound) {
-              // Implement logic to compare other cells or handle no match scenario
-              console.log(`No match found for ${jsonFile}`);
-            }
-
-            // Save Excel file
-            workbook.xlsx.writeFile('output.xlsx')
-              .then(() => {
-                console.log('Excel file saved with updated data.');
-              })
-              .catch(error => {
-                console.error(`Error writing Excel file:`, error);
-              });
-          } else {
-            console.log(`String not found in ${jsonFile}`);
           }
+
+          // If no match found, consider other comparison logic here
+          if (!matchFound) {
+            // Implement logic to compare other cells or handle no match scenario
+            console.log(`No match found for ${jsonFile}`);
+          }
+
+          // Save Excel file
+          workbook.xlsx.writeFile('output.xlsx')
+            .then(() => {
+              console.log('Excel file saved with updated data.');
+            })
+            .catch(error => {
+              console.error(`Error writing Excel file:`, error);
+            });
         });
       });
     });
