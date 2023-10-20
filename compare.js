@@ -2,8 +2,8 @@ const fs = require("fs");
 const Excel = require("exceljs");
 
 // Define the directory path and Excel file name
-const directoryPath = "C:/Users/Hao/OneDrive/Documents/data/";
-const excelFileName = "C:/Users/Hao/OneDrive/Documents/data/guid.xlsx";
+const directoryPath = "C:/Users/patricia7909/Desktop/Test/data/";
+const excelFileName = "C:/Users/patricia7909/Desktop/Test/test1.xlsx";
 
 // Read Excel Data
 const workbook = new Excel.Workbook();
@@ -40,6 +40,12 @@ workbook.xlsx
           // Process JSON data
           const parsedJsonData = JSON.parse(jsonData);
 
+          // Search for String in JSON Data
+          const searchString = 'GUID';
+          const offset = 3; // Number of charactes after the string
+          const  length = 36; // Length of the data to extract
+          const extractedDate = parsedJsonData.slice(foundIndex + 1);
+          
           // Initialize flag for match found
           let matchFound = false;
 
